@@ -68,3 +68,31 @@ def line_up(DId, DNat):
 def dance(LdrId, FlrId):
     if (LdrId != -1) and (FlrId != -1):
         print("Leader %s and Follower %s are dancing." %(LdrId, FlrId))
+
+def leader_routine(LdrId):
+    global LdrCount, FlrCount, DncrCount
+
+    FlrId, DNat = -1, 'Leader'
+    thread_local_sem = Semaphore(0)
+
+    while True: 
+        runnable_sem.acquire()
+        runnable_sem.release()
+        sleep(rng.random()*3)
+
+        mutex_local.acquire()
+        if FlrCount > 0:
+            FlrCount -= 1
+            FlrQueueObj.class_signal()
+            FlrId = FIDKeeper.popleft();
+            mutex_local.release()
+        else:
+            LdrCount += 1
+            LIDKeeper.append(LdrId)
+            mutex_local.release()
+            LdrQueueObj.class_wait(thread_local_sem)
+        
+        enter_floor(LdrId, DNat)
+        dance(LdrId, FlrId)
+        sleep(2)
+        line_up(LdrId, DNat)
