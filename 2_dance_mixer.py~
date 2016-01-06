@@ -96,3 +96,31 @@ def leader_routine(LdrId):
         dance(LdrId, FlrId)
         sleep(2)
         line_up(LdrId, DNat)
+
+
+def follower_routine(FlrId):
+    global LdrCount, FlrCount, DncrCount
+
+    LdrId, DNat = -1, 'Follower'
+    thread_local_sem = Semaphore(0)
+
+    while True:
+        runnable_sem.acquire()
+        runnable_sem.release()
+        sleep(rng.random()*3)
+
+        mutex_local.acquire()
+        if LdrCount > 0:
+            LdrCount -= 1
+            LdrQueueObj.class_signal()
+            LdrId = LIDKeeper.popleft()
+            mutex_local.release()
+        else:
+            FlrCount += 1
+            FIDKeeper.append(FlrId)
+            mutex_local.release()
+            FlrQueueObj.class_wait(thread_local_sem)
+        enter_floor(FlrId, DNat)
+        dance(LdrId, FlrId) 
+        sleep(5)
+        line_up(FlrId, DNat) 
