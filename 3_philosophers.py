@@ -116,3 +116,29 @@ def tannenbaumRun():
     for t in tthrds: t.start()
     for t in tthrds: t.join()
 
+arg_list = []
+PCount, MCount = 0, 0
+
+for arg in sys.argv:
+    arg_list.append(arg)
+
+if len(arg_list) == 3:
+
+    PCount = int(arg_list[1])
+    MCount = int(arg_list[2])
+    forks = [Semaphore(1) for c in range(PCount)]
+    footman = Semaphore(PCount-1)
+    sem = [Semaphore(0) for c in range(PCount)]
+    state = ['thinking'] * PCount
+
+    print ("Running dining philosophers simulation: %d philosophers, %d meals each" % (PCount,MCount))
+    ftimer = Timer(footmanRun)
+    print("1. Footman solution, time elapsed: {:0.4f}s".format(ftimer.timeit(100)))
+    ltimer = Timer(leftHandedRun)
+    print("2. Left-handed solution, time elapsed: {:0.4f}s".format(ltimer.timeit(100)))
+    ttimer = Timer(tannenbaumRun)
+    print("3. Tannenbaum's solution, time elapsed: {:0.4f}s".format(ttimer.timeit(100)))
+
+else:
+    print ("EXITED with ERROR: Incorrect argument count. Only 2 arguments are allowed.\nUsage:python filename philosopher_count meal_count")
+
