@@ -124,3 +124,30 @@ def follower_routine(FlrId):
         dance(LdrId, FlrId) 
         sleep(5)
         line_up(FlrId, DNat) 
+
+
+LdrQueueObj = FIFOQCreator()
+FlrQueueObj = FIFOQCreator()
+arg_list = []
+InLdrCount, InFlrCount = 0, 0
+
+for arg in sys.argv:
+    arg_list.append(arg)
+
+if len(arg_list) == 3:
+
+    InLdrCount = int(arg_list[1])
+    InFlrCount = int(arg_list[2])
+
+    print ("Running dance mixer simulation: %d leaders and %d followers" % (InLdrCount,InFlrCount))
+    lthrds = [Thread(target=leader_routine, args=[i]) for i in range(InLdrCount)]
+    for lt in lthrds: lt.start()
+
+    fthrds = [Thread(target=follower_routine, args=[i]) for i in range(InFlrCount)]
+    for ft in fthrds: ft.start()
+
+    for music in itertools.cycle(['waltz', 'tango', 'foxtrot']):
+        bandleader_routine()
+
+else:
+    print ("EXITED with ERROR: Incorrect argument count. Only 2 arguments are allowed.\nUsage:python filename leader_count follower_count")
