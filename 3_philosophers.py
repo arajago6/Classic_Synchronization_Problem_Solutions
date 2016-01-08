@@ -24,3 +24,33 @@ def footmanMain(i,MCount):
             forks[left_fork(i)].release()
             state = 0
             footman.release()
+
+def leftHandedMain(i,MCount):
+    global forks
+    state = 0
+    for m in range(0,MCount):
+        sleep(rng.random()/100)
+        if(state == 0):
+            if i == 0:	
+                forks[left_fork(i)].acquire()
+                forks[right_fork(i)].acquire()
+                state = 1
+            else:
+                forks[right_fork(i)].acquire()	
+                forks[left_fork(i)].acquire()
+                state = 1
+        else:
+            if i == 0:	
+                forks[left_fork(i)].release()
+                forks[right_fork(i)].release()
+                state = 0
+            else:
+                forks[right_fork(i)].release()	
+                forks[left_fork(i)].release()
+                state = 0
+
+def left_fork(id):
+    return id
+
+def right_fork(id):
+    return (id+1) % PCount
